@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {
     View,
     Text,
-    Button,
     Platform,
     Image,
     StyleSheet,
@@ -11,8 +10,6 @@ import {
     TouchableOpacity
 } from 'react-native';
 import yelp from '../api/yelp';
-import {Foundation, Feather} from '@expo/vector-icons';
-// import openMap from 'react-native-open-maps';
 
 const BusinessDetailScreen = ({navigation}) => {
 
@@ -70,15 +67,6 @@ const BusinessDetailScreen = ({navigation}) => {
                 <Text style={styles.businessNameStyle}>
                     {businessDetails.name}
                 </Text>
-                {/*<View*/}
-                {/*    style={styles.callButtonViewStyle}>*/}
-                {/*    <TouchableOpacity onPress={() => callNumber(businessDetails.phone)}>*/}
-                {/*        <View style={styles.innerCallButtonViewStyle}>*/}
-                {/*            <Foundation style={styles.callButtonIconStyle} size={15} name={'telephone'}/>*/}
-                {/*            <Text style={styles.callButtonStyle}>Call {businessDetails.hours[0].is_open_now ? '(Open)' : '(Closed)'}</Text>*/}
-                {/*        </View>*/}
-                {/*    </TouchableOpacity>*/}
-                {/*</View>*/}
             </View>
             <Text>{businessDetails.categories[0].title || 'Business'}</Text>
             <Text style={styles.businessAddressStyle}>
@@ -94,7 +82,6 @@ const BusinessDetailScreen = ({navigation}) => {
             <View>
                 <TouchableOpacity onPress={() => callNumber(businessDetails.phone)}>
                     <View style={styles.actionButtonViewStyle}>
-                        {/*<Feather name={'navigation'} size={20}/>*/}
                         <Text style={styles.actionButtonTextStyle}>Call {businessDetails.hours[0].is_open_now ? '(Open Now)' : '(Closed)'}</Text>
                     </View>
                 </TouchableOpacity>
@@ -103,7 +90,6 @@ const BusinessDetailScreen = ({navigation}) => {
                 <TouchableOpacity
                     onPress={() => openMap(businessDetails.coordinates.latitude, businessDetails.coordinates.longitude, businessDetails.name)}>
                     <View style={styles.actionButtonViewStyle}>
-                        {/*<Feather name={'navigation'} size={20}/>*/}
                         <Text style={styles.actionButtonTextStyle}>Get Directions</Text>
                     </View>
                 </TouchableOpacity>

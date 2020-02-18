@@ -35,7 +35,6 @@ const SearchScreen = ( ) => {
                 size={ 20 }
                 searchTerm={ location }
                 onSearchTermSubmit={ () => {
-                    searchApi(searchTerm, location);
                     setLocation(location);
                     setInitialPageLoad(false);
                 } }
