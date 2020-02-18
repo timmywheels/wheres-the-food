@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         color: GREY,
         textShadowColor: 'rgba(221,221,221,0.55)',
-        textShadowOffset: {width: 2, height: 2},
+        textShadowOffset: {width: 1, height: 1},
         textShadowRadius: 2
     },
     actionButtonViewStyleInverse: {
