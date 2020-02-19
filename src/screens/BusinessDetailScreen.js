@@ -1,15 +1,20 @@
 import React, {useState, useEffect} from 'react';
 import {
+    ScrollView,
     View,
     Text,
     Platform,
     Image,
+    FlatList,
     StyleSheet,
     ActivityIndicator,
     Linking,
     TouchableOpacity
 } from 'react-native';
 import yelp from '../api/yelp';
+import {LinearGradient} from 'expo-linear-gradient';
+import {openMap} from "../utils/helpers";
+
 
 const BusinessDetailScreen = ({navigation}) => {
 
@@ -49,57 +54,74 @@ const BusinessDetailScreen = ({navigation}) => {
         fetchBusinessDetails(id).catch(err => err);
     }, []);
 
-    const openMap = (lat, lng, customLabel) => {
-        const scheme = Platform.select({ios: 'maps:0,0?q=', android: 'geo:0,0?q='});
-        const latLng = `${lat},${lng}`;
-        const label = customLabel;
-        const url = Platform.select({
-            ios: `${scheme}${label}@${latLng}`,
-            android: `${scheme}${latLng}(${label})`
-        });
-        return Linking.openURL(url);
-    };
-
+    if (!businessDetails) {
+        return null;
+    }
 
     return businessDetails ? (
-        <View style={styles.containerViewStyle}>
-            <View style={styles.topDetailsViewStyle}>
-                <Text style={styles.businessNameStyle}>
-                    {businessDetails.name}
-                </Text>
-            </View>
-            <Text>{businessDetails.categories[0].title || 'Business'}</Text>
-            <Text style={styles.businessAddressStyle}>
+            <ScrollView showsVerticalScrollIndicator={false} style={styles.containerViewStyle}>
+                <View style={styles.topDetailsViewStyle}>
+                    <Text style={styles.businessNameStyle}>
+                        {businessDetails.name}
+                    </Text>
+                </View>
+                <View style={styles.businessCategoryAddressStyle}>
+                    <Text>{businessDetails.categories[0].title || 'Business'}</Text>
+                    <Text style={styles.businessAddressStyle}>
 
-                {businessDetails.location.display_address.length > 2 ?
-                    `${businessDetails.location.display_address[0]}, ${businessDetails.location.display_address[1]}, ${businessDetails.location.display_address[2]}`
-                    : `${businessDetails.location.display_address[0]}, ${businessDetails.location.display_address[1]}`
-                }
-            </Text>
-            <View style={styles.primaryBusinessImageView}>
-                <Image style={styles.primaryBusinessImage} source={{uri: businessDetails.image_url}}/>
-            </View>
-            <View>
-                <TouchableOpacity onPress={() => callNumber(businessDetails.phone)}>
-                    <View style={styles.actionButtonViewStyle}>
-                        <Text style={styles.actionButtonTextStyle}>Call {businessDetails.hours[0].is_open_now ? '(Open Now)' : '(Closed)'}</Text>
+                        {businessDetails.location.display_address.length > 2 ?
+                            `${businessDetails.location.display_address[0]}, ${businessDetails.location.display_address[1]}, ${businessDetails.location.display_address[2]}`
+                            : `${businessDetails.location.display_address[0]}, ${businessDetails.location.display_address[1]}`
+                        }
+                    </Text>
+                </View>
+                <View>
+                    <FlatList
+
+                        data={businessDetails.photos}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        keyExtractor={key => key}
+                        renderItem={({item}) => {
+                            return (
+                                <View style={styles.primaryBusinessImageView}>
+                                    <Image style={styles.primaryBusinessImage} source={{uri: item}}/>
+                                </View>
+                            )
+                        }}
+                    />
+                </View>
+                <View style={styles.buttonContainerView}>
+                    <View>
+                        <TouchableOpacity onPress={() => callNumber(businessDetails.phone)}>
+                            <LinearGradient
+                                style={styles.actionButtonViewStyleAlt}
+                                locations={[0, 1.0]}
+                                colors={['#8f00ff', '#f62681']}
+                                start={{x: 0, y: 1}}
+                                end={{x: 1, y: 1}}
+                            >
+                                <Text
+                                    style={styles.actionButtonTextStyleAlt}>Call {businessDetails.hours[0].is_open_now ? '(Open Now)' : '(Closed)'}</Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
                     </View>
-                </TouchableOpacity>
-            </View>
-            <View>
-                <TouchableOpacity
-                    onPress={() => openMap(businessDetails.coordinates.latitude, businessDetails.coordinates.longitude, businessDetails.name)}>
-                    <View style={styles.actionButtonViewStyle}>
-                        <Text style={styles.actionButtonTextStyle}>Get Directions</Text>
+                    <View>
+                        <TouchableOpacity
+                            onPress={() => openMap(businessDetails.coordinates.latitude, businessDetails.coordinates.longitude, businessDetails.name)}>
+                            <View style={styles.actionButtonViewStyle}>
+                                <Text style={styles.actionButtonTextStyle}>Get Directions</Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
-                </TouchableOpacity>
+                </View>
+            </ScrollView>
+        ) :
+        (
+            <View style={styles.activityIndicatorView}>
+                <ActivityIndicator/>
             </View>
-        </View>
-    ) : (
-        <View style={styles.activityIndicatorView}>
-            <ActivityIndicator/>
-        </View>
-    )
+        )
 };
 
 const ELECTRIC_PURPLE = '#8f00ff';
@@ -117,9 +139,11 @@ const styles = StyleSheet.create({
         backgroundColor: LIGHT_GREY
     },
     containerViewStyle: {
-        margin: 10
+        // margin: 10,
+        flex: 1
     },
     topDetailsViewStyle: {
+        margin: 10,
         flexDirection: 'row',
         marginTop: 20,
         marginBottom: 10
@@ -129,33 +153,15 @@ const styles = StyleSheet.create({
         fontSize: 20,
         flex: 1
     },
-    openCallButtonViewStyle: {
-        borderColor: GREEN,
+    businessCategoryAddressStyle: {
+        margin: 10
     },
-    closedCallButtonViewStyle: {
-        borderColor: RED,
-    },
-    openCallButtonStyle: {
-        color: GREEN,
-    },
-    closedCallButtonStyle: {
-        color: RED,
+    buttonContainerView: {
+        margin: 10
     },
     callButtonStyle: {
         textTransform: 'uppercase',
         letterSpacing: 1,
-    },
-    openCallButtonIconStyle: {
-        color: GREEN,
-
-    },
-    closedCallButtonIconStyle: {
-        color: RED,
-
-    },
-    callButtonIconStyle: {
-        marginRight: 5
-
     },
     innerCallButtonViewStyle: {
         flexDirection: 'row'
@@ -168,11 +174,27 @@ const styles = StyleSheet.create({
             width: 2,
             height: 2
         },
-        marginBottom: 20
+        marginBottom: 10
     },
     primaryBusinessImage: {
         borderRadius: 10,
-        height: 300,
+        width: 320,
+        height: 220,
+        marginHorizontal: 10
+    },
+    secondaryBusinessImageView: {
+        shadowColor: DARK_GREY,
+        shadowOpacity: 0.75,
+        shadowRadius: 5,
+        shadowOffset: {
+            width: 2,
+            height: 2
+        },
+        marginVertical: 10
+    },
+    secondaryBusinessImageStyle: {
+        borderRadius: 10,
+        height: 150,
         width: '100%',
     },
     businessAddressStyle: {
@@ -183,8 +205,8 @@ const styles = StyleSheet.create({
         marginVertical: 20
     },
     actionButtonViewStyle: {
-        borderWidth: 1,
-        borderColor: LIGHT_GREY,
+        borderWidth: 2,
+        borderColor: ELECTRIC_PURPLE,
         shadowColor: GREY,
         shadowOpacity: 0.25,
         shadowRadius: 5,
@@ -192,27 +214,28 @@ const styles = StyleSheet.create({
             width: 1,
             height: 1
         },
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        textAlign: 'center',
         height: 50,
         borderRadius: 4,
-        marginVertical: 5
+        marginVertical: 10
     },
     actionButtonTextStyle: {
         fontSize: 14,
         letterSpacing: 3,
+        fontWeight: '500',
         textTransform: 'uppercase',
-        color: GREY,
-        textShadowColor: 'rgba(221,221,221,0.55)',
-        textShadowOffset: {width: 1, height: 1},
+        color: ELECTRIC_PURPLE,
+        textAlign: 'center',
+        // textShadowColor: 'rgba(221,221,221,0.55)',
+        // textShadowOffset: {width: 1, height: 1},
         textShadowRadius: 2
     },
-    actionButtonViewStyleInverse: {
-        borderWidth: 1,
-        borderColor: DARK_GREY,
+    actionButtonViewStyleAlt: {
+        // borderWidth: 1,
+        // borderColor: WHITE,
         shadowColor: DARK_GREY,
         shadowOpacity: 0.25,
         shadowRadius: 5,
@@ -220,20 +243,21 @@ const styles = StyleSheet.create({
             width: 1,
             height: 1
         },
-        backgroundColor: LIGHT_GREY,
+        backgroundColor: ELECTRIC_PURPLE,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        textAlign: 'center',
         height: 50,
         borderRadius: 4,
         marginVertical: 5
     },
-    actionButtonTextStyleInverse: {
+    actionButtonTextStyleAlt: {
         fontSize: 14,
+        textAlign: 'center',
+        fontWeight: '500',
         letterSpacing: 3,
         textTransform: 'uppercase',
-        color: DARK_GREY
+        color: WHITE
     }
 });
 

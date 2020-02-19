@@ -1,38 +1,28 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
+import {renderStarRating} from "../utils/helpers";
+import {Image} from 'react-native-elements';
 
-const BusinessCard = ({ businessName, imgUrl, rating, reviewCount, displayAddress }) => {
-
-    const renderStarRating = (rating) => {
-        const temp = [];
-        if (rating % 1 !== 0) {
-            for (let i = 0; i < rating - 1; i++) {
-                temp.push(<Ionicons key={i} name={'ios-star'} size={15} />)
-            }
-            temp.push(<Ionicons key={rating} name={'ios-star-half'} size={15} />)
-        } else {
-            for (let i = 0; i < rating; i++) {
-                temp.push(<Ionicons key={i} name={'ios-star'} size={15} />)
-            }
-        }
-        return temp;
-    };
-
+const BusinessCard = ({businessName, imgUrl, rating, reviewCount, displayAddress}) => {
     return (
-        <View style={ styles.containerViewStyle }>
-            <View style={ styles.imageViewStyle }>
-                <Image style={ styles.imageStyle } source={ { uri: imgUrl } }/>
-            </View>
-            <View style={ styles.infoViewStyle }>
-                <Text style={ styles.businessNameStyle }>{ businessName }</Text>
-                <Text>{displayAddress[0]}</Text>
-                <Text>{displayAddress[1]}</Text>
-                <View style={styles.infoSubViewStyle}>
-                    <Text style={styles.ratingStyle} >
-                        { renderStarRating(rating) }
-                    </Text>
-                    <Text style={styles.reviewCountStyle}>{ reviewCount } reviews</Text>
+        <View style={styles.outerContainerViewStyle}>
+            <View style={styles.containerViewStyle}>
+                <View style={styles.imageViewStyle}>
+                    <Image
+                        PlaceholderContent={<ActivityIndicator style={styles.activityIndicator}/>}
+                        style={styles.imageStyle}
+                        source={{uri: imgUrl}}/>
+                </View>
+                <View style={styles.infoViewStyle}>
+                    <Text numberOfLines={1} style={styles.businessNameStyle}>{businessName}</Text>
+                    <Text>{displayAddress[0]}</Text>
+                    <Text>{displayAddress[1]}</Text>
+                    <View style={styles.infoSubViewStyle}>
+                        <Text style={styles.ratingStyle}>
+                            {renderStarRating(rating)}
+                        </Text>
+                        <Text style={styles.reviewCountStyle}>{reviewCount} reviews</Text>
+                    </View>
                 </View>
             </View>
         </View>
@@ -40,31 +30,35 @@ const BusinessCard = ({ businessName, imgUrl, rating, reviewCount, displayAddres
 };
 
 const styles = StyleSheet.create({
+    outerContainerViewStyle: {
+        shadowColor: '#333',
+        shadowOpacity: 0.25,
+        shadowRadius: 5,
+        shadowOffset: {
+            width: 1,
+            height: 1
+        }
+    },
     containerViewStyle: {
         flexDirection: 'row',
         backgroundColor: '#fff',
         borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#ddd',
         minWidth: 300,
         margin: 10,
-        shadowColor: '#ddd',
-        shadowOpacity: 0.75,
-        shadowRadius: 5,
-        shadowOffset: {
-            width: 2,
-            height: 2
-        }
+        overflow: 'hidden'
+    },
+    activityIndicator: {
+        borderRadius: 10
     },
     imageViewStyle: {
-        marginRight: 10
+        marginRight: 10,
 
     },
     imageStyle: {
         minHeight: 135,
         minWidth: 135,
-        borderTopLeftRadius: 10,
-        borderBottomLeftRadius: 10
+        borderTopLeftRadius: 8,
+        borderBottomLeftRadius: 8
     },
     infoViewStyle: {
         paddingVertical: 20,
@@ -73,7 +67,7 @@ const styles = StyleSheet.create({
     businessNameStyle: {
         fontSize: 18,
         textAlign: 'left',
-        fontWeight: '600',
+        fontWeight: '600'
     },
     infoSubViewStyle: {
         marginTop: 5,

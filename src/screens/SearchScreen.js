@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { ScrollView, Text, View, StyleSheet, ActivityIndicator } from 'react-native';
+import React, {useState} from 'react';
+import {ScrollView, Text, View, StyleSheet, ActivityIndicator} from 'react-native';
 import SearchBar from "../components/SearchBar";
 import useResults from '../hooks/useResults';
 import ResultsList from "../components/ResultsList";
 
-const SearchScreen = ( ) => {
+const SearchScreen = () => {
     const [searchTerm, setSearchTerm] = useState("Cocktails");
     const [location, setLocation] = useState("Providence, RI");
     const [initialPageLoad, setInitialPageLoad] = useState(true);
@@ -17,59 +17,74 @@ const SearchScreen = ( ) => {
     };
 
     return results.length ? (
-        <ScrollView style={ styles.scrollViewStyle }>
-            <SearchBar
-                placeholder={ 'Search' }
-                iconName={ 'search' }
-                size={ 20 }
-                searchTerm={ searchTerm }
-                onSearchTermSubmit={ () => {
-                    searchApi(searchTerm, location);
-                    setInitialPageLoad(false);
-                } }
-                onSearchTermChange={ (newSearchTerm) => setSearchTerm(newSearchTerm) }
-            />
-            <SearchBar
-                placeholder={ 'Location' }
-                iconName={ 'navigation' }
-                size={ 20 }
-                searchTerm={ location }
-                onSearchTermSubmit={ () => {
-                    setLocation(location);
-                    setInitialPageLoad(false);
-                } }
-                onSearchTermChange={ (newLocation) => setLocation(newLocation) }
-            />
-            <Text
-                style={ styles.resultsCount }>{ results.length === 1 ? '1 result found' : `${ results.length } results found` }</Text>
-            { errorMessage ? <Text style={ styles.errorMessage }>{ errorMessage }</Text> : null }
-            { !initialPageLoad ? <Text style={ styles.searchDetailsStyle }>{ searchTerm } in { location }</Text> : null }
-            { filterResultsByPrice('$').length ? <ResultsList results={ filterResultsByPrice('$') } title={ 'Cheap Date' }/> : null }
-            { filterResultsByPrice('$$').length ? <ResultsList results={ filterResultsByPrice('$$') } title={ 'The Usual' }/> : null }
-            { filterResultsByPrice('$$$').length ? <ResultsList results={ filterResultsByPrice('$$$') } title={ 'Little Pricey' }/> : null }
-            { filterResultsByPrice('$$$$').length ? <ResultsList results={ filterResultsByPrice('$$$$') } title={ 'Ball Out' }/> : null }
-        </ScrollView>
+        <View style={styles.mainViewStyle}>
+            <View style={styles.searchViewStyle}>
+                <SearchBar
+                    style={{marginBottom: 5}}
+                    placeholder={'Search'}
+                    iconName={'search'}
+                    size={20}
+                    searchTerm={searchTerm}
+                    onSearchTermSubmit={() => {
+                        searchApi(searchTerm, location);
+                        setInitialPageLoad(false);
+                    }}
+                    onSearchTermChange={(newSearchTerm) => setSearchTerm(newSearchTerm)}
+                />
+                <SearchBar
+                    placeholder={'Location'}
+                    iconName={'navigation'}
+                    size={20}
+                    searchTerm={location}
+                    onSearchTermSubmit={() => {
+                        setLocation(location);
+                        searchApi(searchTerm, location);
+                        setInitialPageLoad(false);
+                    }}
+                    onSearchTermChange={(newLocation) => setLocation(newLocation)}
+                />
+            </View>
+            <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollViewStyle}>
+                <Text
+                    style={styles.resultsCount}>{results.length === 1 ? '1 result found' : `${results.length} results found`}</Text>
+                {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
+                {!initialPageLoad ? <Text style={styles.searchDetailsStyle}>{searchTerm} in {location}</Text> : null}
+                <ResultsList results={filterResultsByPrice('$')} title={'Cheap Date'}/>
+                <ResultsList results={filterResultsByPrice('$$')} title={'The Usual'}/>
+                <ResultsList results={filterResultsByPrice('$$$')} title={'Little Pricey'}/>
+                <ResultsList results={filterResultsByPrice('$$$$')} title={'Ball Out'}/>
+            </ScrollView>
+        </View>
     ) : (
-        <View style={ styles.activityIndicatorView }>
+        <View style={styles.activityIndicatorView}>
             <ActivityIndicator/>
         </View>
     )
 };
 
 const styles = StyleSheet.create({
+    mainViewStyle: {
+        flex: 1
+    },
     activityIndicatorView: {
         flex: 1,
         justifyContent: 'center',
         backgroundColor: '#dddddd55'
+    },
+    searchViewStyle: {
+        paddingVertical: 10,
+        borderBottomWidth: 1,
+        borderColor: '#ddd'
+    },
+    scrollViewStyle: {
+        backgroundColor: '#f1f6f8',
+        paddingBottom: 100
     },
     searchDetailsStyle: {
         textAlign: 'center',
         fontSize: 16,
         fontWeight: '600',
         marginVertical: 10
-    },
-    scrollViewStyle: {
-        paddingBottom: 100
     },
     textStyle: {
         fontSize: 30,

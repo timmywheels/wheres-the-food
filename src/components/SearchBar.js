@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import {View, TextInput, Button, StyleSheet} from 'react-native';
+import {Feather} from '@expo/vector-icons';
 
 
-const SearchBar = ({ placeholder, searchTerm, onSearchTermChange, onSearchTermSubmit, iconName, size }) => {
+const SearchBar = ({placeholder, searchTerm, onSearchTermChange, onSearchTermSubmit, iconName, size, style}) => {
     return (
-        <View style={styles.searchContainer}>
-            <Feather style={styles.searchIcon} name={iconName} size={size} />
+        <View style={{...styles.searchContainer, ...style}}>
+            <Feather style={styles.searchIcon} name={iconName} size={size}/>
             <TextInput
                 value={searchTerm}
                 style={styles.searchInput}
@@ -14,7 +14,7 @@ const SearchBar = ({ placeholder, searchTerm, onSearchTermChange, onSearchTermSu
                 autoCorrect={false}
                 placeholder={placeholder}
                 onChangeText={(newSearchTerm) => onSearchTermChange(newSearchTerm)}
-                onEndEditing={() => onSearchTermSubmit()}
+                onSubmitEditing={() => onSearchTermSubmit()}
             />
         </View>
     )
@@ -22,27 +22,31 @@ const SearchBar = ({ placeholder, searchTerm, onSearchTermChange, onSearchTermSu
 
 const styles = StyleSheet.create({
     searchContainer: {
-        backgroundColor: '#ddd',
-        height: 40,
+        backgroundColor: '#FAFBFC',
+        height: 30,
         borderRadius: 5,
         marginHorizontal: 15,
-        marginTop: 15,
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: '#E1DFE6'
     },
     searchIcon: {
         marginLeft: 10,
-        opacity: 0.5
+        opacity: 0.5,
+        color: '#8f99a9'
     },
     searchInput: {
-        fontSize: 20,
+        fontSize: 14,
         marginHorizontal: 5,
-        flex: 1
+        flex: 1,
+        color: '#8f99a9'
     },
     textStyle: {
         fontSize: 30,
         textAlign: 'center',
-        marginVertical: 20
+        marginVertical: 20,
+        color: '#8f99a9'
     }
 });
 
