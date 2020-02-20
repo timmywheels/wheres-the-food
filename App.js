@@ -13,7 +13,6 @@ const navigator = createStackNavigator({
 }, {
     initialRouteName: 'Search',
     defaultNavigationOptions: {
-        title: "Where's the Food?",
         headerTitle: (<Image style={{ height: 30, width: 180}} source={require('./src/assets/img/wheres-the-food-logo.png')} /> ),
         headerStyle: {
             backgroundColor: '#00c6ff',
