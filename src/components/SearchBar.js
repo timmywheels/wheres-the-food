@@ -22,25 +22,23 @@ const SearchBar = ({placeholder, searchTerm, onSearchTermChange, onSearchTermSub
 
 const styles = StyleSheet.create({
     searchContainer: {
-        backgroundColor: '#FAFBFC',
+        backgroundColor: 'rgba(0,0,0,0.15)',
         height: 30,
         borderRadius: 5,
         marginHorizontal: 15,
         flexDirection: 'row',
         alignItems: 'center',
-        borderWidth: 2,
-        borderColor: '#E1DFE6'
     },
     searchIcon: {
         marginLeft: 10,
         opacity: 0.5,
-        color: '#8f99a9'
+        color: '#fff'
     },
     searchInput: {
         fontSize: 14,
         marginHorizontal: 5,
         flex: 1,
-        color: '#8f99a9'
+        color: '#fff'
     },
     textStyle: {
         fontSize: 30,

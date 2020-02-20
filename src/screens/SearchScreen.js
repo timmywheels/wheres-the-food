@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
-import {ScrollView, Text, View, StyleSheet, ActivityIndicator} from 'react-native';
-import SearchBar from "../components/SearchBar";
+import React, { useState } from 'react';
+import { ScrollView, Text, View, StyleSheet, ActivityIndicator } from 'react-native';
 import useResults from '../hooks/useResults';
 import ResultsList from "../components/ResultsList";
+import SearchBarSection from "../components/SearchBarSection";
 
 const SearchScreen = () => {
     const [searchTerm, setSearchTerm] = useState("Cocktails");
@@ -17,46 +17,29 @@ const SearchScreen = () => {
     };
 
     return results.length ? (
-        <View style={styles.mainViewStyle}>
-            <View style={styles.searchViewStyle}>
-                <SearchBar
-                    style={{marginBottom: 5}}
-                    placeholder={'Search'}
-                    iconName={'search'}
-                    size={20}
-                    searchTerm={searchTerm}
-                    onSearchTermSubmit={() => {
-                        searchApi(searchTerm, location);
-                        setInitialPageLoad(false);
-                    }}
-                    onSearchTermChange={(newSearchTerm) => setSearchTerm(newSearchTerm)}
-                />
-                <SearchBar
-                    placeholder={'Location'}
-                    iconName={'navigation'}
-                    size={20}
-                    searchTerm={location}
-                    onSearchTermSubmit={() => {
-                        setLocation(location);
-                        searchApi(searchTerm, location);
-                        setInitialPageLoad(false);
-                    }}
-                    onSearchTermChange={(newLocation) => setLocation(newLocation)}
-                />
-            </View>
-            <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollViewStyle}>
+        <View style={ styles.mainViewStyle }>
+            <SearchBarSection
+                searchApi={ searchApi }
+                searchTerm={ searchTerm }
+                setSearchTerm={ setSearchTerm }
+                location={location}
+                setLocation={ setLocation }
+                setInitialPageLoad={ setInitialPageLoad }
+            />
+            <ScrollView showsVerticalScrollIndicator={ false } style={ styles.scrollViewStyle }>
                 <Text
-                    style={styles.resultsCount}>{results.length === 1 ? '1 result found' : `${results.length} results found`}</Text>
-                {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
-                {!initialPageLoad ? <Text style={styles.searchDetailsStyle}>{searchTerm} in {location}</Text> : null}
-                <ResultsList results={filterResultsByPrice('$')} title={'Cheap Date'}/>
-                <ResultsList results={filterResultsByPrice('$$')} title={'The Usual'}/>
-                <ResultsList results={filterResultsByPrice('$$$')} title={'Little Pricey'}/>
-                <ResultsList results={filterResultsByPrice('$$$$')} title={'Ball Out'}/>
+                    style={ styles.resultsCount }>{ results.length === 1 ? '1 result found' : `${ results.length } results found` }</Text>
+                { errorMessage ? <Text style={ styles.errorMessage }>{ errorMessage }</Text> : null }
+                { !initialPageLoad ?
+                    <Text style={ styles.searchDetailsStyle }>{ searchTerm } in { location }</Text> : null }
+                <ResultsList results={ filterResultsByPrice('$') } title={ 'Cheap Date' }/>
+                <ResultsList results={ filterResultsByPrice('$$') } title={ 'The Usual' }/>
+                <ResultsList results={ filterResultsByPrice('$$$') } title={ 'Little Pricey' }/>
+                <ResultsList results={ filterResultsByPrice('$$$$') } title={ 'Ball Out' }/>
             </ScrollView>
         </View>
     ) : (
-        <View style={styles.activityIndicatorView}>
+        <View style={ styles.activityIndicatorView }>
             <ActivityIndicator/>
         </View>
     )
@@ -71,10 +54,24 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#dddddd55'
     },
-    searchViewStyle: {
-        paddingVertical: 10,
+    searchViewWrapperStyle: {
         borderBottomWidth: 1,
-        borderColor: '#ddd'
+        borderColor: '#3c3bff',
+        shadowColor: '#333',
+        shadowOpacity: 0.75,
+        shadowRadius: 4,
+        shadowOffset: {
+            width: 1,
+            height: 1
+        },
+        marginBottom: 10
+    },
+    searchViewStyle: {
+        paddingTop: 5,
+        paddingBottom: 15,
+        borderBottomWidth: 1,
+        borderColor: '#0072ff',
+        // backgroundColor: '#6772e5'
     },
     scrollViewStyle: {
         backgroundColor: '#f1f6f8',

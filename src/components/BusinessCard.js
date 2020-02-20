@@ -31,7 +31,7 @@ const BusinessCard = ({businessName, imgUrl, rating, reviewCount, displayAddress
 
 const styles = StyleSheet.create({
     outerContainerViewStyle: {
-        shadowColor: '#333',
+        shadowColor: 'rgba(0,114,255,0.51)',
         shadowOpacity: 0.25,
         shadowRadius: 5,
         shadowOffset: {

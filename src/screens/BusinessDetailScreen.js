@@ -14,6 +14,7 @@ import {
 import yelp from '../api/yelp';
 import {LinearGradient} from 'expo-linear-gradient';
 import {openMap} from "../utils/helpers";
+import SearchBarSection from "../components/SearchBarSection";
 
 
 const BusinessDetailScreen = ({navigation}) => {
@@ -96,10 +97,7 @@ const BusinessDetailScreen = ({navigation}) => {
                         <TouchableOpacity onPress={() => callNumber(businessDetails.phone)}>
                             <LinearGradient
                                 style={styles.actionButtonViewStyleAlt}
-                                locations={[0, 1.0]}
-                                colors={['#8f00ff', '#f62681']}
-                                start={{x: 0, y: 1}}
-                                end={{x: 1, y: 1}}
+                                colors={['#00c6ff', '#0072ff']}
                             >
                                 <Text
                                     style={styles.actionButtonTextStyleAlt}>Call {businessDetails.hours[0].is_open_now ? '(Open Now)' : '(Closed)'}</Text>
@@ -124,7 +122,7 @@ const BusinessDetailScreen = ({navigation}) => {
         )
 };
 
-const ELECTRIC_PURPLE = '#8f00ff';
+const ELECTRIC_PURPLE = '#00c6ff';
 const WHITE = '#fff';
 const LIGHT_GREY = '#ddd';
 const GREY = '#aaa';
