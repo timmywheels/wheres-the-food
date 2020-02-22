@@ -1,10 +1,11 @@
 import axios from 'axios';
-import keys from '../config/keys';
+import getEnvVars from '../../environment';
+const { yelp_api_key } = getEnvVars();
 
 export default axios.create({
     baseURL: 'https://api.yelp.com/v3/businesses',
     headers: {
-        Authorization: `Bearer ${keys.YELP.API_KEY}`
+        Authorization: `Bearer ${yelp_api_key}`
     }
 });
 
